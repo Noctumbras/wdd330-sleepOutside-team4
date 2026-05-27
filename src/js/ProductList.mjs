@@ -1,9 +1,27 @@
+
+import { renderListWithTemplate } from "./utils.mjs";
+
+function productCardTemplate(product) {
+  return `<li class="product-card">
+            <a href="product_pages/?product=${product.Id}">
+              <img
+                src="${product.Image}"
+                alt="${product.Name}"
+              />
+              <h3 class="card__brand">${product.Brand.Name}</h3>
+              <h2 class="card__name">${product.Name}</h2>
+              <p class="product-card__price">$${product.ListPrice}</p>
+            </a>
+          </li>
+        `;
+}
+
+
 export default class ProductList {
   constructor(category, dataSource, listElement) {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
-    this.path = `../json/${this.category}.json`;
     this.products = [];
   }
 
@@ -11,11 +29,7 @@ export default class ProductList {
 
     this.products = await this.dataSource.getData();
 
-    renderListWithTemplate(
-      productCardTemplate,
-      this.listElement,
-      this.products
-    );
+    this.renderProducts();
 
     const sortElement = document.querySelector("#sortProducts");
 
@@ -34,13 +48,18 @@ export default class ProductList {
         );
       }
 
-      this.listElement.innerHTML = "";
-
-      renderListWithTemplate(
-        productCardTemplate,
-        this.listElement,
-        this.products
-      );
+      this.renderProducts();
     });
+  }
+
+  renderProducts() {
+
+    this.listElement.innerHTML = "";
+
+    renderListWithTemplate(
+      productCardTemplate,
+      this.listElement,
+      this.products
+    );
   }
 }
