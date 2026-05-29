@@ -1,7 +1,8 @@
+
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
-    return `<li class="product-card">
+  return `<li class="product-card">
             <a href="product_pages/?product=${product.Id}">
               <img
                 src="${product.Image}"
@@ -21,9 +22,43 @@ export default class ProductList {
     this.dataSource = dataSource;
     this.listElement = listElement;
     this.path = `../json/${this.category}.json`;
+    this.products = [];
   }
+
   async init() {
-    const products = await this.dataSource.getData();
-    renderListWithTemplate(productCardTemplate, this.listElement, products);
+
+    this.products = await this.dataSource.getData();
+
+    renderListWithTemplate(
+      productCardTemplate,
+      this.listElement,
+      this.products
+    );
+
+    const sortElement = document.querySelector("#sortProducts");
+
+    sortElement.addEventListener("change", () => {
+
+      if (sortElement.value === "name") {
+
+        this.products.sort((a, b) =>
+          a.Name.localeCompare(b.Name)
+        );
+
+      } else {
+
+        this.products.sort((a, b) =>
+          a.ListPrice - b.ListPrice
+        );
+      }
+
+      this.listElement.innerHTML = "";
+
+      renderListWithTemplate(
+        productCardTemplate,
+        this.listElement,
+        this.products
+      );
+    });
   }
 }

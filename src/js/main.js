@@ -1,7 +1,7 @@
 import ProductData from "./ProductData.mjs";
 import ProductList from "./ProductList.mjs";
 import Alert from "./alert.mjs";
-import { loadHeaderFooter } from "./utils.mjs";
+import {loadHeaderFooter, getLocalStorage} from "./utils.mjs";
 
 const data = new ProductData("tents");
 const list = new ProductList(
