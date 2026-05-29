@@ -3,7 +3,7 @@ import ProductDetails from "./ProductDetails.mjs";
 import {
   getParam,
   loadHeaderFooter,
-  addProductToCart,
+  addProductToCart, 
 } from "./utils.mjs";
 
 const dataSource = new ProductData("tents");
