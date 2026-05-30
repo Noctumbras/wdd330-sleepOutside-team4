@@ -61,7 +61,8 @@ export default class ProductList {
         this.listElement,
         this.products
       );
-     */
+     
     });
+    */
   }
 }
