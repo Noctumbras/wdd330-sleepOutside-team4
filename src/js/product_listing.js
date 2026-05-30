@@ -2,7 +2,7 @@ import ProductData from './ProductData.js';
 import ProductList from './ProductList.js';
 import { loadHeaderFooter, getParam } from './utils.mjs';
 
-loadHeaderFooter();
+loadHeaderFooter("../partials/header.html", "../partials/footer.html", document.querySelector("#main-header"), document.querySelector("#main-footer"));
 
 const category = getParam('category');
 // first create an instance of the ProductData class.
