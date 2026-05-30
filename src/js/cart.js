@@ -2,8 +2,28 @@ import { getLocalStorage } from "./utils.mjs";
 import { loadHeaderFooter } from "./utils.mjs";
 
 function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+  const cartItems = getLocalStorage("so-cart") || [];
+
+  // combine duplicate items
+  const summarizedCart = [];
+
+  cartItems.forEach((item) => {
+    const existingItem = summarizedCart.find(
+      (product) => product.Id === item.Id,
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      summarizedCart.push({
+        ...item,
+        quantity: 1,
+      });
+    }
+  });
+
+  const htmlItems = summarizedCart.map((item) => cartItemTemplate(item));
+
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 }
 
@@ -19,7 +39,7 @@ function cartItemTemplate(item) {
     <h2 class="card__name">${item.Name}</h2>
   </a>
   <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
+  <p class="cart-card__quantity">qty: ${item.quantity}</p>
   <p class="cart-card__price">$${item.FinalPrice}</p>
 </li>`;
 
@@ -32,4 +52,5 @@ loadHeaderFooter(
   document.querySelector("#main-header"),
   document.querySelector("#main-footer"),
 );
+
 renderCartContents();
