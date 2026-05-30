@@ -23,6 +23,7 @@ function renderCartContents() {
   });
 
   const htmlItems = summarizedCart.map((item) => cartItemTemplate(item));
+  console.log(htmlItems);
 
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 }
@@ -31,7 +32,7 @@ function cartItemTemplate(item) {
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
-      src="${item.Image}"
+      src="${item.Images.PrimaryMedium}"
       alt="${item.Name}"
     />
   </a>
@@ -54,5 +55,4 @@ loadHeaderFooter(
 );
 
 renderCartContents();
-loadHeaderFooter("../partials/header.html", "../partials/footer.html", document.querySelector("#main-header"), document.querySelector("#main-footer"));
-renderCartContents();
+
