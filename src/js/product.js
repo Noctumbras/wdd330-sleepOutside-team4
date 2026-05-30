@@ -5,8 +5,6 @@ import {
   loadHeaderFooter,
   addProductToCart, 
 } from "./utils.mjs";
-import { getParam } from "./utils.mjs";
-import {loadHeaderFooter} from "./utils.mjs";
 
 const dataSource = new ProductData();
 const productId = getParam('product');

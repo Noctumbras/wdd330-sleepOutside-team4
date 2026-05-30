@@ -27,12 +27,12 @@ export default class ProductList {
 
   async init() {
 
-    this.products = await this.dataSource.getData();
+    const productList = await this.dataSource.getData();
 
     renderListWithTemplate(
       productCardTemplate,
       this.listElement,
-      this.products
+      productList
     );
 
     // There's no #sortProducts element anywhere and I'm not sure where it is meant to go, so this section is commented out for the moment.
