@@ -1,5 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
-import { loadHeaderFooter } from "./utils.mjs";
+import { getLocalStorage, loadHeaderFooter, renderBreadcrumb } from "./utils.mjs";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
@@ -23,7 +22,6 @@ function renderCartContents() {
   });
 
   const htmlItems = summarizedCart.map((item) => cartItemTemplate(item));
-  console.log(htmlItems);
 
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
 }
@@ -55,4 +53,5 @@ loadHeaderFooter(
 );
 
 renderCartContents();
+renderBreadcrumb();
 
