@@ -71,3 +71,11 @@ export function updateCartCount() {
     cartCount.textContent = cartItems.length;
   }
 }
+
+export function addProductToCart(product) {
+  let cart = getLocalStorage("so-cart") || [];
+
+  cart.push(product);
+
+  setLocalStorage("so-cart", cart);
+}
