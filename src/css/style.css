@@ -133,6 +133,32 @@ button {
 
 /* End cart icon styles */
 
+.cart-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+
+  background: red;
+  color: white;
+
+  border-radius: 50%;
+
+  min-width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .mission {
   position: absolute;
   top: 1rem;
@@ -224,6 +250,28 @@ button {
 
 .product-detail img {
   width: 100%;
+}
+
+.product-price {
+  margin: 1rem 0;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: gray;
+  font-size: var(--small-font);
+}
+
+.discount {
+  color: red;
+  font-weight: bold;
+  padding: 0.2rem 0.75rem;
+}
+
+.final-price {
+  font-size: var(--large-font);
+  font-weight: bold;
+  color: var(--secondary-color);
 }
 
 /* Start cart list card styles */

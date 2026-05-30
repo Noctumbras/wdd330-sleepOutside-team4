@@ -1,38 +1,64 @@
+
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
-    return `
-    <li class="product-card">
-      <a href="/product_pages/?product=${product.Id}">
-        <img src="${product.Image}" alt="${product.Name}">
-        <h3>${product.Brand.Name}</h3>
-        <p>${product.NameWithoutBrand}</p>
-        <p class="product-card__price">$${product.FinalPrice}</p>
-      </a>
-    </li>
-    `;
+  return `<li class="product-card">
+            <a href="product_pages/?product=${product.Id}">
+              <img
+                src="${product.Image}"
+                alt="${product.Name}"
+              />
+              <h3 class="card__brand">${product.Brand.Name}</h3>
+              <h2 class="card__name">${product.Name}</h2>
+              <p class="product-card__price">$${product.ListPrice}</p>
+            </a>
+          </li>
+        `;
 }
 
 export default class ProductList {
-    constructor(category, dataSource, listElement) {
-        this.category = category;
-        this.dataSource = dataSource;
-        this.listElement = listElement;
-    }
+  constructor(category, dataSource, listElement) {
+    this.category = category;
+    this.dataSource = dataSource;
+    this.listElement = listElement;
+    this.path = `../json/${this.category}.json`;
+    this.products = [];
+  }
 
-    async init() {
-        const list = await this.dataSource.getData(this.category);
-        this.renderList(list);
-        document.querySelector(".title").textContent = this.category;
-    }
+  async init() {
 
-    renderList(list) {
-        //const htmlStrings = list.map(productCardTemplate);
-        //this.listElement.insertAdjacentHTML("afterbegin", htmlStrings.join(""));
+    this.products = await this.dataSource.getData();
 
-        // apply use new utility function instead of the commented code above
-        renderListWithTemplate(productCardTemplate, this.listElement, list);
+    renderListWithTemplate(
+      productCardTemplate,
+      this.listElement,
+      this.products
+    );
 
-    }
+    const sortElement = document.querySelector("#sortProducts");
 
+    sortElement.addEventListener("change", () => {
+
+      if (sortElement.value === "name") {
+
+        this.products.sort((a, b) =>
+          a.Name.localeCompare(b.Name)
+        );
+
+      } else {
+
+        this.products.sort((a, b) =>
+          a.ListPrice - b.ListPrice
+        );
+      }
+
+      this.listElement.innerHTML = "";
+
+      renderListWithTemplate(
+        productCardTemplate,
+        this.listElement,
+        this.products
+      );
+    });
+  }
 }
