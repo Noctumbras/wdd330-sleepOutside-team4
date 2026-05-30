@@ -2,10 +2,10 @@
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
-  return `<li class="product-card">
-            <a href="product_pages/?product=${product.Id}">
+    return `<li class="product-card">
+            <a href="../product_pages/?product=${product.Id}">
               <img
-                src="${product.Image}"
+                src="${product.Images.PrimaryMedium}"
                 alt="${product.Name}"
               />
               <h3 class="card__brand">${product.Brand.Name}</h3>
@@ -35,6 +35,8 @@ export default class ProductList {
       this.products
     );
 
+    // There's no #sortProducts element anywhere and I'm not sure where it is meant to go, so this section is commented out for the moment.
+    /*
     const sortElement = document.querySelector("#sortProducts");
 
     sortElement.addEventListener("change", () => {
@@ -59,6 +61,7 @@ export default class ProductList {
         this.listElement,
         this.products
       );
+     */
     });
   }
 }

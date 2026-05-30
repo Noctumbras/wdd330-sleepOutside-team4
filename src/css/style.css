@@ -205,6 +205,18 @@ button {
   padding: 1rem;
 }
 
+.category-list {
+  display: flex;
+  flex-flow: row wrap;
+  list-style-type: none;
+  justify-content: center;
+}
+
+.category-list a {
+  width: 20%;
+  margin: 10px;
+}
+
 .product-list {
   display: flex;
   flex-flow: row wrap;
