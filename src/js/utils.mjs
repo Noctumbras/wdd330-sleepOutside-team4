@@ -79,3 +79,27 @@ export function addProductToCart(product) {
 
   setLocalStorage("so-cart", cart);
 }
+
+export async function renderBreadcrumb(data) {
+  const currentUrl = window.location.pathname;
+  let breadcrumb = "";
+
+  if (currentUrl == "/product_listing/")
+  {
+    const category = getParam('category');
+    const products = await data.getData(category);
+    breadcrumb = `${category} > (${products.length} items)`;
+  }
+  else if (currentUrl == "/product_pages/")
+  {
+    const productId = getParam('product');
+    const product = await data.findProductById(productId);
+    breadcrumb = `${product.Category}`;
+  }
+  else
+  {
+    breadcrumb = currentUrl.split('/')[1];
+  }
+
+  document.querySelector("#main-header").insertAdjacentHTML("afterend", `<div class="breadcrumb"><p>${breadcrumb}</p></div>`);
+}

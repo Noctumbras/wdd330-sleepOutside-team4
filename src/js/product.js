@@ -4,6 +4,7 @@ import {
   getParam,
   loadHeaderFooter,
   addProductToCart, 
+  renderBreadcrumb,
 } from "./utils.mjs";
 
 const dataSource = new ProductData();
@@ -12,6 +13,7 @@ const product = new ProductDetails(productId, dataSource);
 
 product.init();
 loadHeaderFooter("../partials/header.html", "../partials/footer.html", document.querySelector("#main-header"), document.querySelector("#main-footer"));
+renderBreadcrumb(dataSource);
 
 // add to cart button event handler
 async function addToCartHandler(e) {
