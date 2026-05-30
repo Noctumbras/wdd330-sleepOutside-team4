@@ -176,7 +176,30 @@ button {
   width: 50%;
   text-align: center;
 }
+.categories {
+  text-align: center;
+  margin: 2rem 0;
+}
 
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.category-card {
+  text-decoration: none;
+  color: black;
+}
+
+.category-card img {
+  width: 100px;
+  height: 100px;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+}
 .products {
   margin-top: 2rem;
   padding: 1rem;
