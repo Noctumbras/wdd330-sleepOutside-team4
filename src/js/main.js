@@ -1,5 +1,5 @@
 import Alert from "./alert.mjs";
-import {loadHeaderFooter} from "./utils.mjs";
+import {loadHeaderFooter, getLocalStorage} from "./utils.mjs";
 
 
 
