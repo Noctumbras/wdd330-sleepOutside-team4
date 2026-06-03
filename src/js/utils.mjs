@@ -72,34 +72,27 @@ export function updateCartCount() {
   }
 }
 
-export function addProductToCart(product) {
-  let cart = getLocalStorage("so-cart") || [];
+export function alertMessage(message, scroll = true){
+  const alert = document.createElement("div");
+  alert.classList.add('alert');
 
-  cart.push(product);
+  alert.innerHTML = `
+    <p>${message}</p>
+    <span>X</span>
+  `;
 
-  setLocalStorage("so-cart", cart);
+  const main = document.querySelector("main");
+
+  alert.addEventListener('click', function (e) {
+    if (e.target.tagName === "SPAN") {
+      main.removeChild(this)
+    }
+  });
+
+  main.prepend(alert);
+
+  if (scroll) { 
+    window.scrollTo(0, 0);
+  }
 }
 
-export async function renderBreadcrumb(data) {
-  const currentUrl = window.location.pathname;
-  let breadcrumb = "";
-
-  if (currentUrl == "/product_listing/")
-  {
-    const category = getParam('category');
-    const products = await data.getData(category);
-    breadcrumb = `${category} > (${products.length} items)`;
-  }
-  else if (currentUrl == "/product_pages/")
-  {
-    const productId = getParam('product');
-    const product = await data.findProductById(productId);
-    breadcrumb = `${product.Category}`;
-  }
-  else
-  {
-    breadcrumb = currentUrl.split('/')[1];
-  }
-
-  document.querySelector("#main-header").insertAdjacentHTML("afterend", `<div class="breadcrumb"><p>${breadcrumb}</p></div>`);
-}
