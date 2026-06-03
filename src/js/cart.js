@@ -38,12 +38,43 @@ function cartItemTemplate(item) {
     <h2 class="card__name">${item.Name}</h2>
   </a>
   <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: ${item.quantity}</p>
+  <div class="cart-card__quantity">
+  <button class="qty-minus" data-id="${item.Id}">-</button>
+  <span>qty: ${item.quantity}</span>
+  <button class="qty-plus" data-id="${item.Id}">+</button>
+</div> 
   <p class="cart-card__price">$${item.FinalPrice}</p>
 </li>`;
 
   return newItem;
 }
+
+document.addEventListener("click", (e) => {
+  let cart = getLocalStorage("so-cart") || [];
+
+  if (e.target.classList.contains("qty-plus")) {
+    const id = e.target.dataset.id;
+
+    const product = cart.find((p) => p.Id === id);
+    cart.push(product);
+
+    localStorage.setItem("so-cart", JSON.stringify(cart));
+    renderCartContents();
+  }
+
+  if (e.target.classList.contains("qty-minus")) {
+    const id = e.target.dataset.id;
+
+    const index = cart.findIndex((p) => p.Id === id);
+
+    if (index > -1) {
+      cart.splice(index, 1);
+    }
+
+    localStorage.setItem("so-cart", JSON.stringify(cart));
+    renderCartContents();
+  }
+});
 
 loadHeaderFooter(
   "../partials/header.html",
