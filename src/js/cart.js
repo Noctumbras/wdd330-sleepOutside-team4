@@ -82,3 +82,5 @@ loadHeaderFooter(
 );
 
 renderCartContents();
+renderBreadcrumb();
+
