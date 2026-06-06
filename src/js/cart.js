@@ -1,88 +1,135 @@
-import { getLocalStorage, loadHeaderFooter, renderBreadcrumb } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
-function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart") || [];
+export default class ProductDetails {
+  constructor(productId, dataSource) {
+    this.productId = productId;
+    this.product = {};
+    this.dataSource = dataSource;
+  }
 
-  // combine duplicate items
-  const summarizedCart = [];
+  async init() {
+    this.product = await this.dataSource.findProductById(this.productId);
 
-  cartItems.forEach((item) => {
-    const existingItem = summarizedCart.find(
-      (product) => product.Id === item.Id,
+    this.renderProductDetails();
+
+    // Add to cart
+    document
+      .getElementById("addToCart")
+      .addEventListener("click", this.addProductToCart.bind(this));
+
+    // Comments
+    document
+      .getElementById("commentForm")
+      .addEventListener("submit", this.addComment.bind(this));
+
+    this.loadComments();
+  }
+
+  addProductToCart() {
+    let cartItems = getLocalStorage("so-cart") || [];
+    cartItems.push(this.product);
+    setLocalStorage("so-cart", cartItems);
+  }
+
+  addComment(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("commentName").value;
+    const text = document.getElementById("commentText").value;
+
+    const newComment = {
+      name,
+      text,
+      date: new Date().toLocaleString(),
+    };
+
+    let comments =
+      JSON.parse(localStorage.getItem(`comments-${this.productId}`)) || [];
+
+    comments.push(newComment);
+
+    localStorage.setItem(
+      `comments-${this.productId}`,
+      JSON.stringify(comments)
     );
 
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      summarizedCart.push({
-        ...item,
-        quantity: 1,
-      });
-    }
-  });
+    document.getElementById("commentForm").reset();
 
-  const htmlItems = summarizedCart.map((item) => cartItemTemplate(item));
-
-  document.querySelector(".product-list").innerHTML = htmlItems.join("");
-}
-
-function cartItemTemplate(item) {
-  const newItem = `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
-    <img
-      src="${item.Images.PrimaryMedium}"
-      alt="${item.Name}"
-    />
-  </a>
-  <a href="#">
-    <h2 class="card__name">${item.Name}</h2>
-  </a>
-  <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <div class="cart-card__quantity">
-  <button class="qty-minus" data-id="${item.Id}">-</button>
-  <span>qty: ${item.quantity}</span>
-  <button class="qty-plus" data-id="${item.Id}">+</button>
-</div> 
-  <p class="cart-card__price">$${item.FinalPrice}</p>
-</li>`;
-
-  return newItem;
-}
-
-document.addEventListener("click", (e) => {
-  let cart = getLocalStorage("so-cart") || [];
-
-  if (e.target.classList.contains("qty-plus")) {
-    const id = e.target.dataset.id;
-
-    const product = cart.find((p) => p.Id === id);
-    cart.push(product);
-
-    localStorage.setItem("so-cart", JSON.stringify(cart));
-    renderCartContents();
+    this.loadComments();
   }
 
-  if (e.target.classList.contains("qty-minus")) {
-    const id = e.target.dataset.id;
+  loadComments() {
+    const comments =
+      JSON.parse(localStorage.getItem(`comments-${this.productId}`)) || [];
 
-    const index = cart.findIndex((p) => p.Id === id);
+    const container = document.getElementById("commentsList");
 
-    if (index > -1) {
-      cart.splice(index, 1);
-    }
-
-    localStorage.setItem("so-cart", JSON.stringify(cart));
-    renderCartContents();
+    container.innerHTML = comments
+      .map(
+        (c) => `
+        <div class="comment">
+          <h4>${c.name}</h4>
+          <p>${c.text}</p>
+          <small>${c.date}</small>
+        </div>
+      `
+      )
+      .join("");
   }
-});
 
-loadHeaderFooter(
-  "../partials/header.html",
-  "../partials/footer.html",
-  document.querySelector("#main-header"),
-  document.querySelector("#main-footer"),
-);
+  renderProductDetails() {
+    const originalPrice = this.product.SuggestedRetailPrice;
+    const finalPrice = this.product.FinalPrice;
 
-renderCartContents();
-renderBreadcrumb();
+    const discount = Math.round(
+      ((originalPrice - finalPrice) / originalPrice) * 100
+    );
 
+    document.querySelector(".product-detail").innerHTML = `
+      <h3>${this.product.Brand.Name}</h3>
+
+      <h2 class="divider">${this.product.NameWithoutBrand}</h2>
+
+      <img
+        class="divider"
+        src="${this.product.Image}"
+        alt="${this.product.NameWithoutBrand}"
+      />
+
+      <div class="product-price">
+        <p class="original-price">$${originalPrice}</p>
+
+        ${
+          discount > 0 ? `<p class="discount">${discount}% OFF</p>` : ""
+        }
+
+        <p class="final-price">$${finalPrice}</p>
+      </div>
+
+      <p class="product__color">${this.product.Colors[0].ColorName}</p>
+
+      <p class="product__description">
+        ${this.product.DescriptionHtmlSimple}
+      </p>
+
+      <div class="product-detail__add">
+        <button id="addToCart" data-id="${this.product.Id}">
+          Add to Cart
+        </button>
+      </div>
+
+      <!-- COMMENTS SECTION (THIS WAS MISSING) -->
+      <div class="product-comments">
+        <h3>Product Comments</h3>
+
+        <form id="commentForm">
+          <input id="commentName" type="text" placeholder="Your name" required />
+          <textarea id="commentText" placeholder="Write a comment..." required></textarea>
+          <button type="submit">Post Comment</button>
+        </form>
+
+        <div id="commentsList"></div>
+      </div>
+    `;
+  }
+}

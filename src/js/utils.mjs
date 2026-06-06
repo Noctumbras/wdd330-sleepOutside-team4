@@ -80,12 +80,6 @@ export function addProductToCart(product) {
   setLocalStorage("so-cart", cart);
 }
 
-<<<<<<< HEAD
-setLocalStorage("so-cart", cart);
-
-
-=======
->>>>>>> parent of 1ad3edb (Merge pull request #17 from Noctumbras/ac-report3)
 export async function renderBreadcrumb(data) {
   const currentUrl = window.location.pathname;
   let breadcrumb = "";
@@ -108,8 +102,4 @@ export async function renderBreadcrumb(data) {
   }
 
   document.querySelector("#main-header").insertAdjacentHTML("afterend", `<div class="breadcrumb"><p>${breadcrumb}</p></div>`);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> parent of 1ad3edb (Merge pull request #17 from Noctumbras/ac-report3)
