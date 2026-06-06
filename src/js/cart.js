@@ -3,25 +3,27 @@ import { getLocalStorage, loadHeaderFooter, renderBreadcrumb } from "./utils.mjs
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
 
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+  // combine duplicate items
+  const summarizedCart = [];
+
+  cartItems.forEach((item) => {
+    const existingItem = summarizedCart.find(
+      (product) => product.Id === item.Id,
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      summarizedCart.push({
+        ...item,
+        quantity: 1,
+      });
+    }
+  });
+
+  const htmlItems = summarizedCart.map((item) => cartItemTemplate(item));
+
   document.querySelector(".product-list").innerHTML = htmlItems.join("");
-
-  const cartFooter = document.querySelector(".cart-footer");
-
-  if (cartItems.length > 0) {
-    cartFooter.classList.remove("hide");
-
-    const total = calculateCartTotal(cartItems);
-
-    document.querySelector(".cart-total").textContent =
-      `Total: $${total.toFixed(2)}`;
-  }
-}
-
-function calculateCartTotal(cartItems) {
-  return cartItems.reduce((total, item) => {
-    return total + Number(item.FinalPrice);
-  }, 0);
 }
 
 function cartItemTemplate(item) {
@@ -78,7 +80,7 @@ loadHeaderFooter(
   "../partials/header.html",
   "../partials/footer.html",
   document.querySelector("#main-header"),
-  document.querySelector("#main-footer")
+  document.querySelector("#main-footer"),
 );
 
 renderCartContents();

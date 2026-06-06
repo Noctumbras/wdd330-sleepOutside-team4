@@ -72,33 +72,20 @@ export function updateCartCount() {
   }
 }
 
-export function alertMessage(message, scroll = true){
-  const alert = document.createElement("div");
-  alert.classList.add('alert');
+export function addProductToCart(product) {
+  let cart = getLocalStorage("so-cart") || [];
 
-  alert.innerHTML = `
-    <p>${message}</p>
-    <span>X</span>
-  `;
+  cart.push(product);
 
-  const main = document.querySelector("main");
-
-  alert.addEventListener('click', function (e) {
-    if (e.target.tagName === "SPAN") {
-      main.removeChild(this)
-    }
-  });
-
-  main.prepend(alert);
-
-  if (scroll) { 
-    window.scrollTo(0, 0);
-  }
+  setLocalStorage("so-cart", cart);
 }
 
+<<<<<<< HEAD
 setLocalStorage("so-cart", cart);
 
 
+=======
+>>>>>>> parent of 1ad3edb (Merge pull request #17 from Noctumbras/ac-report3)
 export async function renderBreadcrumb(data) {
   const currentUrl = window.location.pathname;
   let breadcrumb = "";
@@ -121,4 +108,8 @@ export async function renderBreadcrumb(data) {
   }
 
   document.querySelector("#main-header").insertAdjacentHTML("afterend", `<div class="breadcrumb"><p>${breadcrumb}</p></div>`);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> parent of 1ad3edb (Merge pull request #17 from Noctumbras/ac-report3)
