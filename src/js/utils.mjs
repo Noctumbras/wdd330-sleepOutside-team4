@@ -28,21 +28,97 @@ export function getParam(param) {
   return urlParams.get(param);
 }
 
-export function renderListWithTemplate(
-  templateFn,
-  parentElement,
-  list,
-  position = "afterbegin",
-  clear = false
-) {
+export function renderListWithTemplate(templateFn, parentElement, list, position = 'afterbegin', clear = false) {
+  const htmlStrings = list.map(templateFn);
+  
   if (clear) {
-    parentElement.innerHTML = "";
+    parentElement.innerHTML = '';
   }
 
-  const htmlStrings = list.map(templateFn);
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(''));
+}
 
-  parentElement.insertAdjacentHTML(
-    position,
-    htmlStrings.join("")
-  );
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+
+  if(callback) {
+    callback(data);
+  }
+}
+
+export async function loadTemplate(path) {
+  const res = await fetch(path);
+  const template = await res.text();
+  return template;
+}
+
+export async function loadHeaderFooter(headerPath, footerPath, headerElement, footerElement) {
+  const headerTemplate = await loadTemplate(headerPath);
+  const footerTemplate = await loadTemplate(footerPath);
+
+  renderWithTemplate(headerTemplate, headerElement);
+  renderWithTemplate(footerTemplate, footerElement);
+
+  updateCartCount();
+}
+
+export function updateCartCount() {
+  const cartItems = getLocalStorage("so-cart") || [];
+
+  const cartCount = document.querySelector(".cart-count");
+
+  if (cartCount) {
+    cartCount.textContent = cartItems.length;
+  }
+}
+
+export function alertMessage(message, scroll = true){
+  const alert = document.createElement("div");
+  alert.classList.add('alert');
+
+  alert.innerHTML = `
+    <p>${message}</p>
+    <span>X</span>
+  `;
+
+  const main = document.querySelector("main");
+
+  alert.addEventListener('click', function (e) {
+    if (e.target.tagName === "SPAN") {
+      main.removeChild(this)
+    }
+  });
+
+  main.prepend(alert);
+
+  if (scroll) { 
+    window.scrollTo(0, 0);
+  }
+}
+
+setLocalStorage("so-cart", cart);
+
+
+export async function renderBreadcrumb(data) {
+  const currentUrl = window.location.pathname;
+  let breadcrumb = "";
+
+  if (currentUrl == "/product_listing/")
+  {
+    const category = getParam('category');
+    const products = await data.getData(category);
+    breadcrumb = `${category} > (${products.length} items)`;
+  }
+  else if (currentUrl == "/product_pages/")
+  {
+    const productId = getParam('product');
+    const product = await data.findProductById(productId);
+    breadcrumb = `${product.Category}`;
+  }
+  else
+  {
+    breadcrumb = currentUrl.split('/')[1];
+  }
+
+  document.querySelector("#main-header").insertAdjacentHTML("afterend", `<div class="breadcrumb"><p>${breadcrumb}</p></div>`);
 }
