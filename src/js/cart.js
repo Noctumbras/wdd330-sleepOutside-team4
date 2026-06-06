@@ -52,28 +52,31 @@ function cartItemTemplate(item) {
 document.addEventListener("click", (e) => {
   let cart = getLocalStorage("so-cart") || [];
 
+  // increase quantity
   if (e.target.classList.contains("qty-plus")) {
     const id = e.target.dataset.id;
 
     const product = cart.find((p) => p.Id === id);
-    cart.push(product);
 
-    localStorage.setItem("so-cart", JSON.stringify(cart));
-    renderCartContents();
+    if (product) {
+      cart.push(product);
+    }
   }
 
+  // decrease quantity
   if (e.target.classList.contains("qty-minus")) {
     const id = e.target.dataset.id;
 
     const index = cart.findIndex((p) => p.Id === id);
 
-    if (index > -1) {
+    if (index !== -1) {
       cart.splice(index, 1);
     }
-
-    localStorage.setItem("so-cart", JSON.stringify(cart));
-    renderCartContents();
   }
+
+  localStorage.setItem("so-cart", JSON.stringify(cart));
+
+  renderCartContents();
 });
 
 loadHeaderFooter(

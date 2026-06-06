@@ -4,20 +4,26 @@ import {
   getParam,
   loadHeaderFooter,
   addProductToCart, 
-  renderBreadcrumb,
 } from "./utils.mjs";
 
-const dataSource = new ProductData();
-const productId = getParam('product');
+const dataSource = new ProductData("tents");
+const productId = getParam("product");
 const product = new ProductDetails(productId, dataSource);
 
 product.init();
-loadHeaderFooter("../partials/header.html", "../partials/footer.html", document.querySelector("#main-header"), document.querySelector("#main-footer"));
-renderBreadcrumb(dataSource);
+
+loadHeaderFooter(
+  "../partials/header.html",
+  "../partials/footer.html",
+  document.querySelector("#main-header"),
+  document.querySelector("#main-footer"),
+);
 
 // add to cart button event handler
 async function addToCartHandler(e) {
-  const productToAdd = await dataSource.findProductById(e.target.dataset.id);
+  const productToAdd = await dataSource.findProductById(
+    e.target.dataset.id,
+  );
   addProductToCart(productToAdd);
 }
 
@@ -26,4 +32,4 @@ async function addToCartHandler(e) {
 document
   .getElementById("addToCart")
   .addEventListener("click", addToCartHandler);
-  */
+*/
